@@ -203,6 +203,256 @@ curl -X DELETE http://localhost:8080/api/products/1
 }
 ```
 
+## Frontend Overview
+
+The frontend is a modern single-page application (SPA) built with Vue 3, TypeScript, Pinia, and TailwindCSS. It provides an intuitive user interface for managing financial products with a dark blue theme and responsive design.
+
+### Key Features
+- 🎨 Dark blue themed interface with gradient backgrounds
+- 📊 Interactive dashboard with statistics and recent products
+- 📋 Complete product list with full CRUD operations
+- ➕ Create product form with validation
+- ✏️ Update product form with pre-filled data
+- 🗑️ Delete functionality with confirmation dialogs
+- 🔄 Real-time state management with Pinia
+- 🎯 TypeScript for type safety
+- 📱 Fully responsive design
+- ⚡ Fast and optimized with Vite
+
+## Frontend Project Structure
+
+```
+frontend/sweui/
+├── index.html              # HTML entry point
+├── package.json            # Node.js dependencies
+├── vite.config.ts          # Vite configuration
+├── tailwind.config.js      # TailwindCSS theme configuration
+├── postcss.config.js       # PostCSS configuration
+├── tsconfig.json           # TypeScript configuration
+├── src/
+│   ├── main.ts             # Application entry point
+│   ├── App.vue             # Root component with navigation
+│   ├── assets/
+│   │   └── main.css        # Global styles and Tailwind imports
+│   ├── router/
+│   │   └── index.ts        # Vue Router configuration
+│   ├── services/
+│   │   └── api.ts          # API service for backend communication
+│   ├── stores/
+│   │   └── productStore.ts # Pinia store for state management
+│   ├── types/
+│   │   └── product.ts      # TypeScript interfaces
+│   └── views/
+│       ├── Dashboard.vue  # Dashboard with statistics
+│       ├── ProductList.vue # Product listing with delete
+│       ├── CreateProduct.vue # Create product form
+│       └── UpdateProduct.vue # Update product form
+└── public/                 # Static assets
+```
+
+### Directory Responsibilities
+
+- **router/**: Client-side routing configuration with Vue Router
+- **services/**: API communication layer using Axios
+- **stores/**: Global state management with Pinia
+- **types/**: TypeScript type definitions and interfaces
+- **views/**: Page-level Vue components
+- **assets/**: Global CSS and styling resources
+
+## Frontend Functionality
+
+### Routes
+
+| Route | Component | Description |
+|-------|-----------|-------------|
+| `/` | Dashboard | Main dashboard with statistics and recent products |
+| `/products` | ProductList | Full list of all products with delete functionality |
+| `/products/create` | CreateProduct | Form to create a new product |
+| `/products/edit/:id` | UpdateProduct | Form to edit an existing product |
+
+### Components Overview
+
+#### Dashboard (`/`)
+- Displays total product count
+- Shows recent products (last 5)
+- Quick action buttons
+- System status indicator
+- Responsive card-based layout
+
+#### Product List (`/products`)
+- Complete table view of all products
+- Sortable columns
+- Delete button with confirmation
+- Edit button for each product
+- Empty state handling
+- Loading and error states
+
+#### Create Product (`/products/create`)
+- Form with all required fields
+- Real-time validation
+- Error message display
+- Success redirect to product list
+- Cancel button to return to list
+
+#### Update Product (`/products/edit/:id`)
+- Pre-filled form with existing data
+- Same validation as create form
+- Updates existing product
+- Error handling for invalid IDs
+
+### State Management
+
+The application uses Pinia for state management with the following store:
+
+**`productStore`**:
+- `products`: Array of all products
+- `selectedProduct`: Currently selected product
+- `loading`: Loading state indicator
+- `error`: Error message state
+- `productCount`: Computed total count
+- Actions: `fetchProducts`, `fetchProductById`, `createProduct`, `updateProduct`, `deleteProduct`
+
+## Frontend Installation
+
+### Prerequisites
+
+- Node.js 20.19.0 or >=22.12.0
+- npm or yarn package manager
+- Backend API running on `http://localhost:8080`
+
+### Setup Steps
+
+1. **Navigate to frontend directory**:
+   ```bash
+   cd frontend/sweui
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables**:
+   Create a `.env` file in the `frontend/sweui/` directory:
+   ```env
+   VITE_API_BASE_URL=http://localhost:8080/api
+   ```
+   
+   If the backend runs on a different port or URL, update this accordingly.
+
+4. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
+
+   The application will be available at `http://localhost:5173` (or the port shown in the terminal).
+
+5. **Build for production** (optional):
+   ```bash
+   npm run build
+   ```
+
+   The production build will be in the `dist/` directory.
+
+## Frontend Usage
+
+### Development Mode
+
+```bash
+cd frontend/sweui
+npm run dev
+```
+
+The development server will:
+- Start on `http://localhost:5173` (or next available port)
+- Enable hot module replacement (HMR)
+- Show compilation errors in the browser
+- Provide source maps for debugging
+
+### Available Scripts
+
+- `npm run dev` - Start development server with HMR
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build locally
+- `npm run type-check` - Run TypeScript type checking
+
+### User Interface Features
+
+#### Navigation
+- Top navigation bar with dark blue theme
+- Active route highlighting
+- Responsive mobile menu
+
+#### Color Scheme
+- **Primary Color**: `#0066e6` (dark blue)
+- **Background**: Gradient from `primary-900` to `primary-700`
+- **Cards**: Semi-transparent white with backdrop blur
+- **Text**: White and light blue shades for contrast
+
+#### Form Validation
+- Required field indicators (red asterisk)
+- Real-time validation feedback
+- Error messages displayed in red
+- Disabled submit button during loading
+
+#### Loading States
+- Spinner animations during API calls
+- Loading text indicators
+- Disabled buttons to prevent duplicate submissions
+
+#### Error Handling
+- Error messages displayed in red cards
+- Retry buttons for failed operations
+- User-friendly error messages
+- Console logging for debugging
+
+### API Integration
+
+The frontend communicates with the backend through:
+
+- **Base URL**: Configurable via `VITE_API_BASE_URL` environment variable
+- **Default**: `http://localhost:8080/api`
+- **Endpoints**: All CRUD operations on `/products`
+
+#### API Service Methods
+
+```typescript
+// Get all products
+productService.getAllProducts(): Promise<Product[]>
+
+// Get product by ID
+productService.getProductById(id: number): Promise<Product>
+
+// Create new product
+productService.createProduct(data: ProductFormData): Promise<Product>
+
+// Update product
+productService.updateProduct(id: number, data: ProductFormData): Promise<Product>
+
+// Delete product
+productService.deleteProduct(id: number): Promise<void>
+```
+
+### Styling
+
+The application uses **TailwindCSS** with a custom dark blue theme:
+
+- **Primary Colors**: `primary-50` through `primary-900`
+- **Main Color**: `primary-500` (#0066e6)
+- **Utilities**: Full Tailwind utility classes
+- **Custom Styles**: Global styles in `src/assets/main.css`
+- **Responsive**: Mobile-first responsive design
+
+### Technologies Used
+
+- **Vue 3.5.25**: Progressive JavaScript framework with Composition API
+- **TypeScript 5.9**: Type-safe JavaScript
+- **Pinia 3.0.4**: State management library
+- **Vue Router 4.4.5**: Client-side routing
+- **TailwindCSS 3.4.17**: Utility-first CSS framework
+- **Axios 1.7.9**: HTTP client for API requests
+- **Vite 7.2.4**: Build tool and development server
+
 ## User Testing Plan
 
 ### Test Scenarios
@@ -291,11 +541,65 @@ All test cases should pass with:
 
 ---
 
+## Quick Start Guide
+
+### Running the Full Stack Application
+
+1. **Start the Backend**:
+   ```bash
+   cd backend
+   go run main.go
+   ```
+   Backend will run on `http://localhost:8080`
+
+2. **Start the Frontend** (in a new terminal):
+   ```bash
+   cd frontend/sweui
+   npm install  # First time only
+   npm run dev
+   ```
+   Frontend will run on `http://localhost:5173`
+
+3. **Access the Application**:
+   - Open your browser and navigate to `http://localhost:5173`
+   - The frontend will automatically connect to the backend API
+
+### Environment Setup
+
+**Backend** (`.env` in `backend/`):
+```env
+DATABASE_URL_CONECTION=postgres://username:password@localhost:5432/dbname?sslmode=disable
+PORT=8080
+```
+
+**Frontend** (`.env` in `frontend/sweui/`):
+```env
+VITE_API_BASE_URL=http://localhost:8080/api
+```
+
+---
+
 ## Development Notes
 
+### Backend
 - The application uses Gin framework for HTTP routing and JSON handling
 - Database connection uses pgx driver for PostgreSQL
 - Environment variables are loaded using godotenv
 - The database table is automatically created on first run
+- Test data is automatically seeded if the table is empty
+- CORS is configured to allow frontend connections
 - All endpoints return JSON responses
 - Error handling includes proper HTTP status codes and error messages
+- ID fields are converted from database integers to strings for API responses
+
+### Frontend
+- Built with Vue 3 Composition API and TypeScript
+- State management handled by Pinia stores
+- Routing managed by Vue Router
+- API communication via Axios with error handling
+- Styling with TailwindCSS and custom dark blue theme
+- Responsive design for mobile and desktop
+- Form validation and user feedback
+- Loading states and error handling throughout
+- Hot Module Replacement (HMR) enabled in development
+- Type-safe development with TypeScript
