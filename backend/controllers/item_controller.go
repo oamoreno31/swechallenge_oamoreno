@@ -26,8 +26,9 @@ func GetProducts(c *gin.Context) {
 
 	for rows.Next() {
 		var product models.Item
+		var idInt int64
 		err := rows.Scan(
-			&product.ID,
+			&idInt,
 			&product.Ticker,
 			&product.Target_from,
 			&product.Target_to,
@@ -43,6 +44,7 @@ func GetProducts(c *gin.Context) {
 			fmt.Println("Error ", FN, " ", err.Error())
 			return
 		}
+		product.ID = fmt.Sprintf("%d", idInt)
 		products = append(products, product)
 	}
 
@@ -55,12 +57,13 @@ func GetProduct(c *gin.Context) {
 	id := c.Param("id")
 
 	var item models.Item
+	var idInt int64
 	err := config.DB.QueryRow(
 		c,
 		"SELECT id, ticker, target_from, target_to, company, action, brokerage, rating_from, rating_to, time FROM items WHERE id = $1",
 		id,
 	).Scan(
-		&item.ID,
+		&idInt,
 		&item.Ticker,
 		&item.Target_from,
 		&item.Target_to,
@@ -71,12 +74,12 @@ func GetProduct(c *gin.Context) {
 		&item.Rating_to,
 		&item.Time,
 	)
-
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Producto no encontrado"})
 		fmt.Println("Error ", FN, " ", err.Error())
 		return
 	}
+	item.ID = fmt.Sprintf("%d", idInt)
 
 	c.JSON(http.StatusOK, item)
 }
@@ -92,7 +95,7 @@ func CreateProduct(c *gin.Context) {
 		return
 	}
 
-	//var idInt int
+	var idInt int64
 	err := config.DB.QueryRow(
 		c,
 		"INSERT INTO items (ticker, target_from, target_to, company, action, brokerage, rating_from, rating_to, time) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id, time",
@@ -105,16 +108,16 @@ func CreateProduct(c *gin.Context) {
 		item.Rating_from,
 		item.Rating_to,
 		item.Time,
-	).Scan(&item.ID, &item.Time)
-
-	// Convert int to string
-	//item.ID = fmt.Sprintf("%d", idInt)
+	).Scan(&idInt, &item.Time)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		fmt.Println("Error ", FN, " ", err.Error())
 		return
 	}
+
+	// Convert int to string
+	item.ID = fmt.Sprintf("%d", idInt)
 
 	c.JSON(http.StatusCreated, item)
 }
@@ -159,7 +162,7 @@ func UpdateProduct(c *gin.Context) {
 	}
 
 	// Keep the ID consistent with the model type (string)
-	//item.ID = id
+	item.ID = id
 	c.JSON(http.StatusOK, item)
 }
 

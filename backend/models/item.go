@@ -1,7 +1,7 @@
 package models
 
 type Item struct {
-	ID          int64  `json:"ID"`
+	ID          string `json:"ID"`
 	Ticker      string `json:"Ticker" binding:"required"`
 	Target_from string `json:"Target_from" binding:"required"`
 	Target_to   string `json:"Target_to" binding:"required"`
